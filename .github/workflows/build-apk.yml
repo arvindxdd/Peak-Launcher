@@ -25,9 +25,14 @@ jobs:
 
       - name: Build Debug APK
         run: |
-          if [ -f "CanvasHome/settings.gradle.kts" ]; then
-            cd CanvasHome
+          if [ -z "$(find . -name 'settings.gradle.kts' -print -quit)" ]; then
+            for z in *.zip; do
+              [ -f "$z" ] && unzip -o "$z"
+            done
           fi
+          PROJECT_DIR=$(dirname "$(find . -name 'settings.gradle.kts' -print -quit)")
+          echo "Building from: $PROJECT_DIR"
+          cd "$PROJECT_DIR"
           gradle assembleDebug --stacktrace
 
       - name: Upload CanvasHome APK Artifact
